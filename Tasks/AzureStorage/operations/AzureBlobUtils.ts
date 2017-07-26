@@ -12,25 +12,27 @@ export class AzureBlobUtils {
         AzureBlobUtils.armStorageClient = new armStorage.StorageManagementClient(credentials, subscriptionId);
     }
 
-    public downloadBlobs(storageAccountName: string, containerName: string, commonVirtualPath:string, destLocation: string): Q.Promise<void> {
-        if(!tl.osType().match(/^Win/)) {
-            throw new Error(tl.osType()+' : OS type not supported with AzCopy');
+    public downloadBlobs(storageAccountName: string, containerName: string, commonVirtualPath: string, destLocation: string): Q.Promise<void> {
+        if (!tl.osType().match(/^Win/)) {
+            throw new Error(tl.osType() + ' : OS type not supported with AzCopy');
         }
 
         var deferred = Q.defer<void>();
         var resourceGroupNamePromise: Q.Promise<string> = AzureBlobUtils.armStorageClient.getResourceGroupName(storageAccountName);
-        resourceGroupNamePromise.then(function(resourceGroupName) {
+        resourceGroupNamePromise.then(function (resourceGroupName) {
             var storageAccountAccessKeysPromise: Q.Promise<string[]> = (AzureBlobUtils.armStorageClient).getStorageAccountAccessKeys(resourceGroupName, storageAccountName);
-            storageAccountAccessKeysPromise.then(async function(accessKeys) {
+            storageAccountAccessKeysPromise.then((accessKeys) => {
                 var storageAccountAccessKey = accessKeys[0];
-                var sourceLocationUrl: string = util.format("https://%s.blob.core.windows.net/%s/%s",storageAccountName,containerName,commonVirtualPath);
-
+                var sourceLocationUrl: string = util.format("https://%s.blob.core.windows.net/%s/%s", storageAccountName, containerName, commonVirtualPath);
                 var azcopyClient = new azcopy.AzCopyUtils();
-                azcopyClient.downloadAll(sourceLocationUrl, destLocation, storageAccountAccessKey);
-            }).catch(function(error) {
+
+                azcopyClient.downloadAll(sourceLocationUrl, destLocation, storageAccountAccessKey)
+                    .then(deferred.resolve);
+
+            }).catch(function (error) {
                 deferred.reject(error);
             });
-        }).catch(function(error) {
+        }).catch(function (error) {
             deferred.reject(error);
         });
 

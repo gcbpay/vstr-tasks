@@ -1,5 +1,5 @@
 import tl = require("vsts-task-lib/task");
-import msRestAzure = require('azure-arm-rest/azure-arm-common');
+import * as msRestAzure from 'azure-arm-rest/azure-arm-common';
 
 var azureStackUtility = require ('azurestack-common/azurestackrestutility.js'); 
 var azureStackEnvironment = "AzureStack";
@@ -73,40 +73,6 @@ export class AzureRGTaskParameters {
         }
     }
 
-    private async getARMCredentials(connectedService: string): Promise<msRestAzure.ApplicationTokenCredentials> {
-        var servicePrincipalId: string = tl.getEndpointAuthorizationParameter(connectedService, "serviceprincipalid", false);
-        var servicePrincipalKey: string = tl.getEndpointAuthorizationParameter(connectedService, "serviceprincipalkey", false);
-        var tenantId: string = tl.getEndpointAuthorizationParameter(connectedService, "tenantid", false);
-        var armUrl: string = tl.getEndpointUrl(connectedService, true);
-        var envAuthorityUrl: string = tl.getEndpointDataParameter(connectedService, 'environmentAuthorityUrl', true);
-        var environment: string = tl.getEndpointDataParameter(connectedService, 'environment', true);
-        var activeDirectoryResourceId: string = tl.getEndpointDataParameter(connectedService, 'activeDirectoryServiceEndpointResourceId', true);
-        var isAzureStackEnvironment = false;
-
-        if(environment != null && environment.toLowerCase() == azureStackEnvironment.toLowerCase()) {
-            isAzureStackEnvironment = true;
-            if(!envAuthorityUrl || !activeDirectoryResourceId) {
-                var endPoint =  await azureStackUtility.initializeAzureStackData({"url":armUrl});
-                envAuthorityUrl = endPoint["environmentAuthorityUrl"];
-                activeDirectoryResourceId = endPoint["activeDirectoryServiceEndpointResourceId"];
-                
-                if(envAuthorityUrl == null) {
-                    throw tl.loc("UnableToFetchAuthorityURL");
-                }
-
-                if(activeDirectoryResourceId == null) {
-                    throw tl.loc("UnableToFetchActiveDirectory");
-                }
-            } 
-        } else {
-            envAuthorityUrl = (envAuthorityUrl != null) ? envAuthorityUrl : "https://login.windows.net/";
-            activeDirectoryResourceId = armUrl;
-        }
-
-        var credentials = new msRestAzure.ApplicationTokenCredentials(servicePrincipalId, tenantId, servicePrincipalKey, armUrl, envAuthorityUrl, activeDirectoryResourceId, isAzureStackEnvironment);
-        return credentials;
-    }
-
     public async getAzureRGTaskParameters() : Promise<AzureRGTaskParameters> 
     {
         try {
@@ -133,7 +99,7 @@ export class AzureRGTaskParameters {
             }
             this.outputVariable = tl.getInput("outputVariable");
             this.deploymentMode = tl.getInput("deploymentMode");
-            this.credentials = await this.getARMCredentials(connectedService);
+            this.credentials = await msRestAzure.getARMCredentials(connectedService);
             this.deploymentGroupProjectName = tl.getInput("project");
             return this;
         } catch (error) {

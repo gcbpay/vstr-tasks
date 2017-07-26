@@ -3,6 +3,8 @@ import Q = require('q');
 import querystring = require('querystring');
 import webClient = require("./webClient");
 var util = require('util');
+var azureStackUtility = require('azurestack-common/azurestackrestutility.js');
+var azureStackEnvironment = "AzureStack";
 
 export class ApplicationTokenCredentials {
     private clientId: string;
@@ -39,10 +41,10 @@ export class ApplicationTokenCredentials {
             throw new Error(tl.loc("activeDirectoryResourceIdUrlCannotBeEmpty"));
         }
 
-        if(!Boolean(isAzureStackEnvironment) || typeof isAzureStackEnvironment.valueOf() != 'boolean') {
+        if (!Boolean(isAzureStackEnvironment) || typeof isAzureStackEnvironment.valueOf() != 'boolean') {
             isAzureStackEnvironment = false;
         }
-    
+
         this.clientId = clientId;
         this.domain = domain;
         this.secret = secret;
@@ -93,4 +95,38 @@ export class ApplicationTokenCredentials {
 
         return deferred.promise;
     }
+}
+
+export async function getARMCredentials(connectedService: string): Promise<ApplicationTokenCredentials> {
+    var servicePrincipalId: string = tl.getEndpointAuthorizationParameter(connectedService, "serviceprincipalid", false);
+    var servicePrincipalKey: string = tl.getEndpointAuthorizationParameter(connectedService, "serviceprincipalkey", false);
+    var tenantId: string = tl.getEndpointAuthorizationParameter(connectedService, "tenantid", false);
+    var armUrl: string = tl.getEndpointUrl(connectedService, true);
+    var envAuthorityUrl: string = tl.getEndpointDataParameter(connectedService, 'environmentAuthorityUrl', true);
+    var environment: string = tl.getEndpointDataParameter(connectedService, 'environment', true);
+    var activeDirectoryResourceId: string = tl.getEndpointDataParameter(connectedService, 'activeDirectoryServiceEndpointResourceId', true);
+    var isAzureStackEnvironment = false;
+
+    if (environment != null && environment.toLowerCase() == azureStackEnvironment.toLowerCase()) {
+        isAzureStackEnvironment = true;
+        if (!envAuthorityUrl || !activeDirectoryResourceId) {
+            var endPoint = await azureStackUtility.initializeAzureStackData({ "url": armUrl });
+            envAuthorityUrl = endPoint["environmentAuthorityUrl"];
+            activeDirectoryResourceId = endPoint["activeDirectoryServiceEndpointResourceId"];
+
+            if (envAuthorityUrl == null) {
+                throw tl.loc("UnableToFetchAuthorityURL");
+            }
+
+            if (activeDirectoryResourceId == null) {
+                throw tl.loc("UnableToFetchActiveDirectory");
+            }
+        }
+    } else {
+        envAuthorityUrl = (envAuthorityUrl != null) ? envAuthorityUrl : "https://login.windows.net/";
+        activeDirectoryResourceId = armUrl;
+    }
+
+    var credentials = new ApplicationTokenCredentials(servicePrincipalId, tenantId, servicePrincipalKey, armUrl, envAuthorityUrl, activeDirectoryResourceId, isAzureStackEnvironment);
+    return credentials;
 }

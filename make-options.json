@@ -12,6 +12,7 @@
         "AzurePowerShell",
         "AzureResourceGroupDeployment",
         "AzureRmWebAppDeployment",
+        "AzureStorage",
         "AzureVmssDeployment",
         "Bash",
         "BatchScript",

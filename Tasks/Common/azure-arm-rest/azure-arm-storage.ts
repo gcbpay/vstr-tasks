@@ -3,6 +3,7 @@ import azureServiceClient = require("./AzureServiceClient");
 import tl = require('vsts-task-lib/task');
 import Q = require('q');
 import util = require("util");
+import * as webClient from "./webClient";
 
 export class StorageManagementClient extends azureServiceClient.ServiceClient {
     constructor(credentials: msRestAzure.ApplicationTokenCredentials, subscriptionId: string) {
@@ -14,7 +15,7 @@ export class StorageManagementClient extends azureServiceClient.ServiceClient {
     }
 
     public getResourceGroupName(storageAccountName: string): Q.Promise<string> {
-        var httpRequest = new azureServiceClient.WebRequest();
+        var httpRequest = new webClient.WebRequest();
         httpRequest.method = 'GET';
         // Getting all storage accounts (along with resource group names) for the given subscription.
         httpRequest.uri = this.getRequestUri(
@@ -24,7 +25,7 @@ export class StorageManagementClient extends azureServiceClient.ServiceClient {
         var resourceGroupName: string = "";
         var deferred = Q.defer<string>();
         this.beginRequest(httpRequest).then(function(result) {
-            var httpResponse: azureServiceClient.WebResponse = result;
+            var httpResponse: webClient.WebResponse = result;
             var response = httpResponse.body["value"];
             for(let i = 0; i<response.length; i++) {
                 var obj = response[i];
@@ -46,7 +47,7 @@ export class StorageManagementClient extends azureServiceClient.ServiceClient {
     }
 
     public getStorageAccountAccessKeys(resourceGroupName: string, storageAccountName: string): Q.Promise<string[]> {
-        var httpRequest = new azureServiceClient.WebRequest();
+        var httpRequest = new webClient.WebRequest();
         httpRequest.method = 'POST';
         httpRequest.uri = this.getRequestUri(
             '//subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{storageAccountName}/listKeys',
@@ -57,7 +58,7 @@ export class StorageManagementClient extends azureServiceClient.ServiceClient {
         );
         var deferred = Q.defer<string[]>();
         this.beginRequest(httpRequest).then(function(result) {
-            var httpResponse: azureServiceClient.WebResponse = result;
+            var httpResponse: webClient.WebResponse = result;
             var response = httpResponse.body["keys"];
 
             var accessKeys: string[] = [];

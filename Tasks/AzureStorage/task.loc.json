@@ -1,0 +1,110 @@
+{
+  "id": "f08193a6-74a6-4ea1-82d7-a9966b50666d",
+  "name": "AzureStorage",
+  "friendlyName": "ms-resource:loc.friendlyName",
+  "description": "ms-resource:loc.description",
+  "helpMarkDown": "ms-resource:loc.helpMarkDown",
+  "category": "Deploy",
+  "releaseNotes": "ms-resource:loc.releaseNotes",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Microsoft Corporation",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "demands": [],
+  "minimumAgentVersion": "2.0.0",
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "ms-resource:loc.input.label.ConnectedServiceName",
+      "required": true,
+      "helpMarkDown": "ms-resource:loc.input.help.ConnectedServiceName"
+    },
+    {
+      "name": "StorageAccountName",
+      "type": "pickList",
+      "label": "ms-resource:loc.input.label.StorageAccountName",
+      "required": true,
+      "helpMarkDown": "ms-resource:loc.input.help.StorageAccountName",
+      "options": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "ContainerName",
+      "type": "string",
+      "label": "ms-resource:loc.input.label.ContainerName",
+      "required": true,
+      "helpMarkDown": "ms-resource:loc.input.help.ContainerName",
+      "options": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "CommonVirtualPath",
+      "type": "string",
+      "label": "ms-resource:loc.input.label.CommonVirtualPath",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "ms-resource:loc.input.help.CommonVirtualPath",
+      "options": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "DestinationDirectory",
+      "type": "string",
+      "label": "ms-resource:loc.input.label.DestinationDirectory",
+      "defaultValue": "$(System.DefaultWorkingDirectory)",
+      "required": true,
+      "helpMarkDown": "ms-resource:loc.input.help.DestinationDirectory",
+      "options": {
+        "EditableOptions": "True"
+      }
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "StorageAccountName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureStorageAccountRM"
+    }
+  ],
+  "instanceNameFormat": "ms-resource:loc.instanceNameFormat",
+  "execution": {
+    "Node": {
+      "target": "main.js"
+    }
+  },
+  "messages": {
+    "ClientIdCannotBeEmpty": "ms-resource:loc.messages.ClientIdCannotBeEmpty",
+    "DomainCannotBeEmpty": "ms-resource:loc.messages.DomainCannotBeEmpty",
+    "SecretCannotBeEmpty": "ms-resource:loc.messages.SecretCannotBeEmpty",
+    "armUrlCannotBeEmpty": "ms-resource:loc.messages.armUrlCannotBeEmpty",
+    "authorityUrlCannotBeEmpty": "ms-resource:loc.messages.authorityUrlCannotBeEmpty",
+    "CouldNotFetchAccessTokenforAzureStatusCode": "ms-resource:loc.messages.CouldNotFetchAccessTokenforAzureStatusCode",
+    "CallbackCannotBeNull": "ms-resource:loc.messages.CallbackCannotBeNull",
+    "CredentialsCannotBeNull": "ms-resource:loc.messages.CredentialsCannotBeNull",
+    "SubscriptionIdCannotBeNull": "ms-resource:loc.messages.SubscriptionIdCannotBeNull",
+    "InvalidResponseLongRunningOperation": "ms-resource:loc.messages.InvalidResponseLongRunningOperation",
+    "TimeoutWhileWaiting": "ms-resource:loc.messages.TimeoutWhileWaiting",
+    "ResourceGroupCannotBeNull": "ms-resource:loc.messages.ResourceGroupCannotBeNull",
+    "ResourceGroupExceededLength": "ms-resource:loc.messages.ResourceGroupExceededLength",
+    "ResourceGroupDeceededLength": "ms-resource:loc.messages.ResourceGroupDeceededLength",
+    "ResourceGroupDoesntMatchPattern": "ms-resource:loc.messages.ResourceGroupDoesntMatchPattern",
+    "SubscriptionIdLabel": "ms-resource:loc.messages.SubscriptionIdLabel",
+    "DownloadingSecretsUsing": "ms-resource:loc.messages.DownloadingSecretsUsing",
+    "GetSecretsFailed": "ms-resource:loc.messages.GetSecretsFailed",
+    "NoSecretsFound": "ms-resource:loc.messages.NoSecretsFound",
+    "NumberOfSecretsFound": "ms-resource:loc.messages.NumberOfSecretsFound",
+    "NumberOfEnabledSecretsFound": "ms-resource:loc.messages.NumberOfEnabledSecretsFound",
+    "DownloadingSecretValue": "ms-resource:loc.messages.DownloadingSecretValue",
+    "GetSecretValueFailed": "ms-resource:loc.messages.GetSecretValueFailed"
+  }
+}
