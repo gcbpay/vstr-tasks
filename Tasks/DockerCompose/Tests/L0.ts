@@ -202,6 +202,7 @@ describe('Docker Compose Suite', function() {
             process.env["__dockerComposeCommand__"] = "up -d"
 
             tr.run();
+            console.log(tr.stdout);
 
             assert(tr.invokedToolCount == 1, 'should have invoked tool one times. actual: ' + tr.invokedToolCount);
             assert(tr.stderr.length == 0 || tr.errorIssues.length, 'should not have written to stderr');
@@ -239,6 +240,7 @@ describe('Docker Compose Suite', function() {
             process.env["__dockerComposeCommand__"] = "up -d"
 
             tr.run();
+            console.log(tr.stdout);
 
             assert(tr.invokedToolCount == 1, 'should have invoked tool one times. actual: ' + tr.invokedToolCount);
             assert(tr.stderr.length == 0 || tr.errorIssues.length, 'should not have written to stderr');
