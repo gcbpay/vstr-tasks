@@ -172,7 +172,7 @@ async function doWork() {
                 }
 
                 fsExtra.move(path.join(localPathRoot, "archive"), localPathRoot).catch((error) => {
-                    console.error(error);
+                    throw error;
                 });
             }
             else {
