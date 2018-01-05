@@ -92,7 +92,6 @@ function publishEvent(feature, properties: any): void {
 }
 
 export async function unzip(zipLocation: string, unzipLocation: string): Promise<void> {
-
     await new Promise<void>(function (resolve, reject) {
         tl.debug('Extracting ' + zipLocation + ' to ' + unzipLocation);
 
@@ -104,7 +103,6 @@ export async function unzip(zipLocation: string, unzipLocation: string): Promise
             tl.debug('Extracted ' + zipLocation + ' to ' + unzipLocation + ' successfully');
             return resolve();
         });
-
         unzipper.extract({
             path: unzipLocation
         });
