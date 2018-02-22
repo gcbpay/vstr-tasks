@@ -28,8 +28,8 @@ async function getJava() {
     const localVersions: string[] = toolLib.findLocalToolVersions('Java');
     const version: string = toolLib.evaluateVersions(localVersions, versionSpec);
 
-     // Clean the destination folder before downloading and extracting?
-     if (cleanDestination && fs.existsSync(destination) && fs.statSync(destination).isDirectory()) {
+    // Clean the destination folder before downloading and extracting?
+    if (cleanDestination && fs.existsSync(destination) && fs.statSync(destination).isDirectory()) {
         console.log(taskLib.loc('CleanDestDir', destination));
 
         // delete the contents of the destination directory but leave the directory in place
@@ -61,7 +61,8 @@ async function getJava() {
 
             const filename = file.split(/[\\\/]/).pop();
             return path.join(destination, filename!);
-        } else if (installationSource === 'FilePath') {
+        } else if (installationSource === 'FilePath'
+            || installationSource === 'LocalDirectory') { // TODO This is for compat with an earlier version of the task. Remove in v1
             console.log(taskLib.loc('RetrievingJdkFromFilePath', versionSpec, architecture));
             return taskLib.getInput('jdkFile', true);
         } else {
