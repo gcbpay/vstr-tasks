@@ -122,7 +122,7 @@
       "type": "string",
       "label": "ms-resource:loc.input.label.outputVariable",
       "required": true,
-      "defaultValue": "Python.$(versionSpec)",
+      "defaultValue": "",
       "helpMarkDown": "ms-resource:loc.input.help.outputVariable"
     }
   ],
