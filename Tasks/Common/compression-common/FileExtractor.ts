@@ -11,13 +11,17 @@ enum CompressedFile {
 }
 
 function compressedFileType(file: string): CompressedFile {
-    if (file.endsWith('.tar')) {
+    function endsWithNoCase(s: string, ending: string): boolean {
+        return s.toLowerCase().endsWith(ending.toLowerCase());
+    }
+
+    if (endsWithNoCase(file, '.tar')) {
         return CompressedFile.Tar;
-    } else if (file.endsWith('.tar.gz') || file.endsWith('.tgz')) {
+    } else if (endsWithNoCase(file, '.tar.gz') || endsWithNoCase(file, '.tgz')) {
         return CompressedFile.Tarball;
-    } else if (file.endsWith('.zip')) {
+    } else if (endsWithNoCase(file, '.zip')) {
         return CompressedFile.Zip;
-    } else if (file.endsWith('.7z')) {
+    } else if (endsWithNoCase(file, '.7z')) {
         return CompressedFile.SevenZip;
     } else {
         throw new Error(tl.loc('UnsupportedFileExtension'));
