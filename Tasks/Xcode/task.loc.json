@@ -314,7 +314,7 @@
       "type": "boolean",
       "label": "ms-resource:loc.input.label.useXcpretty",
       "required": false,
-      "defaultValue": false,
+      "defaultValue": true,
       "helpMarkDown": "ms-resource:loc.input.help.useXcpretty",
       "groupName": "advanced"
     },
@@ -364,6 +364,7 @@
     "NoSchemeFound": "ms-resource:loc.messages.NoSchemeFound",
     "SchemeSelected": "ms-resource:loc.messages.SchemeSelected",
     "FailedToFindScheme": "ms-resource:loc.messages.FailedToFindScheme",
-    "OutputDirectoryIgnored": "ms-resource:loc.messages.OutputDirectoryIgnored"
+    "OutputDirectoryIgnored": "ms-resource:loc.messages.OutputDirectoryIgnored",
+    "XcprettyNotInstalled": "ms-resource:loc.messages.XcprettyNotInstalled"
   }
 }
